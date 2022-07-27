@@ -368,7 +368,6 @@ describe('Bot', function () {
 
     const text = 'testmessage';
     const username = 'otherauthor';
-    const brokenNickname = 'o\u200Btherauthor';
     const message = {
       content: text,
       mentions: { users: [] },
@@ -383,8 +382,8 @@ describe('Bot', function () {
     };
 
     this.bot.sendToIRC(message);
-    // Wrap in colors:
-    const expected = `<\u000304${brokenNickname}\u000f> ${text}`;
+    // Wrap in colors and ping fix:
+    const expected = `<\u000304_${username}_\u000f> ${text}`;
     ClientStub.prototype.say.should.have.been.calledWith('#irc', expected);
   });
 
