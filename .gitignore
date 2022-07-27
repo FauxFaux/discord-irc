@@ -29,6 +29,10 @@ node_modules
 .environment
 config.json
 
+# Vim
+.*.swp
+.*.un~
+
 # Build
 dist/
 .idea/
