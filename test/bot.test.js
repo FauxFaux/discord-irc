@@ -59,9 +59,8 @@ describe('Bot', function () {
     };
 
     this.addRole = function (role) {
-      const roleObj = new discord.Role(this.bot.discord, role, this.guild);
-      this.guild.roles.cache.set(roleObj.id, roleObj);
-      return roleObj;
+      // Returns a promise.
+      return this.guild.roles.create(role);
     };
 
     this.addEmoji = function (emoji) {
@@ -368,7 +367,6 @@ describe('Bot', function () {
 
     const text = 'testmessage';
     const username = 'otherauthor';
-    const brokenNickname = 'o\u200Btherauthor';
     const message = {
       content: text,
       mentions: { users: [] },
@@ -383,8 +381,8 @@ describe('Bot', function () {
     };
 
     this.bot.sendToIRC(message);
-    // Wrap in colors:
-    const expected = `<\u000304${brokenNickname}\u000f> ${text}`;
+    // Wrap in colors and ping fix:
+    const expected = `<\u000304_${username}_\u000f> ${text}`;
     ClientStub.prototype.say.should.have.been.calledWith('#irc', expected);
   });
 
@@ -585,7 +583,7 @@ describe('Bot', function () {
       content: 'hi\nhi\r\nhi\r'
     };
 
-    this.bot.parseText(message).should.equal('hi hi hi ');
+    this.bot.parseText(message).should.equal('hi hi hi');
   });
 
   it('should hide usernames for commands to IRC', function () {
@@ -707,28 +705,27 @@ describe('Bot', function () {
   });
 
   it('should convert role mentions from discord', function () {
-    this.addRole({ name: 'example-role', id: '12345' });
-    const text = '<@&12345>';
-    const message = {
-      content: text,
-      mentions: { users: [] },
-      channel: {
-        name: 'discord'
-      },
-      author: {
-        username: 'test',
-        id: 'not bot id'
-      },
-      guild: this.guild
-    };
+    this.addRole({ name: 'example-role' }).then(role => {
+      const text = `<@&${role.id}>`;
+      const message = {
+        content: text,
+        mentions: { users: [] },
+        channel: {
+          name: 'discord'
+        },
+        author: {
+          username: 'test',
+          id: 'not bot id'
+        },
+        guild: this.guild
+      };
 
-    this.bot.parseText(message).should.equal('@example-role');
+      this.bot.parseText(message).should.equal('@example-role');
+    });
   });
 
   it('should use @deleted-role when referenced role fails to exist', function () {
-    this.addRole({ name: 'example-role', id: '12345' });
-
-    const text = '<@&12346>';
+    const text = '<@&12346999>';
     const message = {
       content: text,
       mentions: { users: [] },
@@ -742,44 +739,44 @@ describe('Bot', function () {
       guild: this.guild
     };
 
-    // Discord displays "@deleted-role" if role doesn't exist (e.g. <@&12346>)
+    // Discord displays "@deleted-role" if role doesn't exist
     this.bot.parseText(message).should.equal('@deleted-role');
   });
 
   it('should convert role mentions from IRC if role mentionable', function () {
-    const testRole = this.addRole({ name: 'example-role', id: '12345', mentionable: true });
+    this.addRole({ name: 'example-role', mentionable: true }).then(testRole => {
+      const username = 'ircuser';
+      const text = 'Hello, @example-role!';
+      const expected = `**<${username}>** Hello, <@&${testRole.id}>!`;
 
-    const username = 'ircuser';
-    const text = 'Hello, @example-role!';
-    const expected = `**<${username}>** Hello, <@&${testRole.id}>!`;
-
-    this.bot.sendToDiscord(username, '#irc', text);
-    this.sendStub.should.have.been.calledWith(expected);
+      this.bot.sendToDiscord(username, '#irc', text);
+      this.sendStub.should.have.been.calledWith(expected);
+    });
   });
 
   it('should not convert role mentions from IRC if role not mentionable', function () {
-    this.addRole({ name: 'example-role', id: '12345', mentionable: false });
+    this.addRole({ name: 'example-role', mentionable: false }).then(function () {
+      const username = 'ircuser';
+      const text = 'Hello, @example-role!';
+      const expected = `**<${username}>** Hello, @example-role!`;
 
-    const username = 'ircuser';
-    const text = 'Hello, @example-role!';
-    const expected = `**<${username}>** Hello, @example-role!`;
-
-    this.bot.sendToDiscord(username, '#irc', text);
-    this.sendStub.should.have.been.calledWith(expected);
+      this.bot.sendToDiscord(username, '#irc', text);
+      this.sendStub.should.have.been.calledWith(expected);
+    });
   });
 
   it('should convert overlapping mentions from IRC properly and case-insensitively', function () {
     const user = this.addUser({ username: 'user', id: '111' });
     const nickUser = this.addUser({ username: 'user2', id: '112', nickname: 'userTest' });
     const nickUserCase = this.addUser({ username: 'user3', id: '113', nickname: 'userTEST' });
-    const role = this.addRole({ name: 'userTestRole', id: '12345', mentionable: true });
+    this.addRole({ name: 'userTestRole', mentionable: true }).then(role => {
+      const username = 'ircuser';
+      const text = 'hello @User, @user, @userTest, @userTEST, @userTestRole and @usertestrole';
+      const expected = `**<${username}>** hello ${user}, ${user}, ${nickUser}, ${nickUserCase}, ${role} and ${role}`;
 
-    const username = 'ircuser';
-    const text = 'hello @User, @user, @userTest, @userTEST, @userTestRole and @usertestrole';
-    const expected = `**<${username}>** hello ${user}, ${user}, ${nickUser}, ${nickUserCase}, ${role} and ${role}`;
-
-    this.bot.sendToDiscord(username, '#irc', text);
-    this.sendStub.should.have.been.calledWith(expected);
+      this.bot.sendToDiscord(username, '#irc', text);
+      this.sendStub.should.have.been.calledWith(expected);
+    });
   });
 
   it('should convert partial matches from IRC properly', function () {
@@ -787,14 +784,14 @@ describe('Bot', function () {
     const longUser = this.addUser({ username: 'user-punc', id: '112' });
     const nickUser = this.addUser({ username: 'user2', id: '113', nickname: 'nick' });
     const nickUserCase = this.addUser({ username: 'user3', id: '114', nickname: 'NiCK' });
-    const role = this.addRole({ name: 'role', id: '12345', mentionable: true });
+    this.addRole({ name: 'role', mentionable: true }).then(role => {
+      const username = 'ircuser';
+      const text = '@user-ific @usermore, @user\'s friend @user-punc, @nicks and @NiCKs @roles';
+      const expected = `**<${username}>** ${user}-ific ${user}more, ${user}'s friend ${longUser}, ${nickUser}s and ${nickUserCase}s ${role}s`;
 
-    const username = 'ircuser';
-    const text = '@user-ific @usermore, @user\'s friend @user-punc, @nicks and @NiCKs @roles';
-    const expected = `**<${username}>** ${user}-ific ${user}more, ${user}'s friend ${longUser}, ${nickUser}s and ${nickUserCase}s ${role}s`;
-
-    this.bot.sendToDiscord(username, '#irc', text);
-    this.sendStub.should.have.been.calledWith(expected);
+      this.bot.sendToDiscord(username, '#irc', text);
+      this.sendStub.should.have.been.calledWith(expected);
+    });
   });
 
   it('should successfully send messages with default config', function () {
@@ -1021,20 +1018,22 @@ describe('Bot', function () {
     it('pads too short usernames', function () {
       const text = 'message';
       this.bot.sendToDiscord('n', '#irc', text);
-      this.sendWebhookMessageStub.should.have.been.calledWith(text, {
+      this.sendWebhookMessageStub.should.have.been.calledWith({
         username: 'n_',
         avatarURL: null,
-        disableMentions: 'everyone',
+        content: text,
+        allowedMentions: { parse: ['users'] }
       });
     });
 
     it('slices too long usernames', function () {
       const text = 'message';
       this.bot.sendToDiscord('1234567890123456789012345678901234567890', '#irc', text);
-      this.sendWebhookMessageStub.should.have.been.calledWith(text, {
+      this.sendWebhookMessageStub.should.have.been.calledWith({
         username: '12345678901234567890123456789012',
         avatarURL: null,
-        disableMentions: 'everyone',
+        content: text,
+        allowedMentions: { parse: ['users'] }
       });
     });
 
@@ -1047,10 +1046,11 @@ describe('Bot', function () {
         new discord.Permissions(permission),
       );
       this.bot.sendToDiscord('nick', '#irc', text);
-      this.sendWebhookMessageStub.should.have.been.calledWith(text, {
+      this.sendWebhookMessageStub.should.have.been.calledWith({
         username: 'nick',
         avatarURL: null,
-        disableMentions: 'everyone',
+        content: text,
+        allowedMentions: { parse: ['users'] }
       });
     });
 
@@ -1064,10 +1064,11 @@ describe('Bot', function () {
         new discord.Permissions(permission),
       );
       this.bot.sendToDiscord('nick', '#irc', text);
-      this.sendWebhookMessageStub.should.have.been.calledWith(text, {
+      this.sendWebhookMessageStub.should.have.been.calledWith({
         username: 'nick',
         avatarURL: null,
-        disableMentions: 'none',
+        content: text,
+        allowedMentions: { parse: ['users', 'roles', 'everyone'] }
       });
     });
 

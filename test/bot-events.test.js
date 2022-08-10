@@ -94,7 +94,7 @@ describe('Bot Events', function () {
       type: 'message'
     };
 
-    this.bot.discord.emit('message', message);
+    this.bot.discord.emit('messageCreate', message);
     this.bot.sendToIRC.should.have.been.calledWithExactly(message);
   });
 
