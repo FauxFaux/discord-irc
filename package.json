@@ -38,10 +38,10 @@
     "winston": "^3"
   },
   "devDependencies": {
-    "@babel/cli": "^7",
-    "@babel/core": "^7",
-    "@babel/preset-env": "^7",
-    "@babel/register": "^7",
+    "@babel/cli": "^8",
+    "@babel/core": "^8",
+    "@babel/preset-env": "^8",
+    "@babel/register": "^8",
     "@eslint/js": "^10",
     "@tsconfig/node24": "^24",
     "@types/chai": "^5.2.3",

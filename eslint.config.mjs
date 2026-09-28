@@ -17,6 +17,17 @@ export default defineConfig([
       },
     },
   },
+  {
+    files: ['lib/**/*.js'],
+    rules: {
+      'no-restricted-imports': ['error', {
+        patterns: [{
+          regex: '^\\.{1,2}/(?!.*\\.(?:js|json)$)',
+          message: 'Use an explicit .js extension for relative JavaScript imports.',
+        }],
+      }],
+    },
+  },
   tseslint.configs.recommended,
   {
     rules: {
