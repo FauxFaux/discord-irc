@@ -5,6 +5,7 @@
     "checkJs": true,
     "erasableSyntaxOnly": true,
     "noImplicitAny": false,
+    "types": ["node", "mocha", "chai"],
     "noEmit": true
   },
   "include": ["lib/**/*.js"]
