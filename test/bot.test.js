@@ -667,7 +667,7 @@ describe('Bot', function () {
     this.sendStub.getCall(1).args.should.deep.equal([text]);
   });
 
-  it('should use nickname instead of username when available', function () {
+  it('should use username even when a nickname is available', function () {
     const text = 'testmessage';
     const newConfig = { ...config, ircNickColor: false };
     this.setCustomBot(newConfig);
@@ -689,7 +689,7 @@ describe('Bot', function () {
     };
 
     this.bot.sendToIRC(message);
-    const expected = `<${nickname}> ${text}`;
+    const expected = `<${message.author.username}> ${text}`;
     ClientStub.prototype.say.should.have.been.calledWith('#irc', expected);
   });
 
