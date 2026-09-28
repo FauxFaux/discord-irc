@@ -154,6 +154,7 @@ describe('Bot', function () {
     const newConfig = { ...config, ircNickColor: false };
     this.setCustomBot(newConfig);
     const message = {
+      embeds: [],
       content: text,
       mentions: { users: [] },
       channel: {
@@ -176,6 +177,7 @@ describe('Bot', function () {
     const newConfig = { ...config, ircNickColors: ['orange'] };
     this.setCustomBot(newConfig);
     const message = {
+      embeds: [],
       content: text,
       mentions: { users: [] },
       channel: {
@@ -196,6 +198,7 @@ describe('Bot', function () {
   it('should send correct messages to irc', function () {
     const text = 'testmessage';
     const message = {
+      embeds: [],
       content: text,
       mentions: { users: [] },
       channel: {
@@ -217,6 +220,7 @@ describe('Bot', function () {
   it('should send to IRC channel mapped by discord channel ID if available', function () {
     const text = 'test message';
     const message = {
+      embeds: [],
       content: text,
       mentions: { users: [] },
       channel: {
@@ -242,6 +246,7 @@ describe('Bot', function () {
   it('should send to IRC channel mapped by discord channel name if ID not available', function () {
     const text = 'test message';
     const message = {
+      embeds: [],
       content: text,
       mentions: { users: [] },
       channel: {
@@ -264,6 +269,7 @@ describe('Bot', function () {
   it('should send attachment URL to IRC', function () {
     const attachmentUrl = 'https://image/url.jpg';
     const message = {
+      embeds: [],
       content: '',
       mentions: { users: [] },
       attachments: createAttachments(attachmentUrl),
@@ -286,6 +292,7 @@ describe('Bot', function () {
     const text = 'Look at this cute cat picture!';
     const attachmentUrl = 'https://image/url.jpg';
     const message = {
+      embeds: [],
       content: text,
       attachments: createAttachments(attachmentUrl),
       mentions: { users: [] },
@@ -312,6 +319,7 @@ describe('Bot', function () {
 
   it('should not send an empty text message with an attachment to IRC', function () {
     const message = {
+      embeds: [],
       content: '',
       attachments: createAttachments('https://image/url.jpg'),
       mentions: { users: [] },
@@ -332,6 +340,7 @@ describe('Bot', function () {
 
   it('should not send its own messages to irc', function () {
     const message = {
+      embeds: [],
       author: {
         username: 'bot',
         id: this.bot.discord.user.id,
@@ -345,6 +354,7 @@ describe('Bot', function () {
 
   it("should not send messages to irc if the channel isn't in the channel mapping", function () {
     const message = {
+      embeds: [],
       channel: {
         name: 'wrongdiscord',
       },
@@ -367,6 +377,7 @@ describe('Bot', function () {
     const username = 'otherauthor';
     const brokenNickname = 'o\u200Btherauthor';
     const message = {
+      embeds: [],
       content: text,
       mentions: { users: [] },
       channel: {
@@ -388,6 +399,7 @@ describe('Bot', function () {
   it('should parse text from discord when sending messages', function () {
     const text = '<#1234>';
     const message = {
+      embeds: [],
       content: text,
       mentions: { users: [] },
       channel: {
@@ -409,6 +421,7 @@ describe('Bot', function () {
   it('should use #deleted-channel when referenced channel fails to exist', function () {
     const text = '<#1235>';
     const message = {
+      embeds: [],
       content: text,
       mentions: { users: [] },
       channel: {
@@ -430,6 +443,7 @@ describe('Bot', function () {
 
   it('should convert user mentions from discord', function () {
     const message = {
+      embeds: [],
       mentions: {
         users: [
           {
@@ -447,6 +461,7 @@ describe('Bot', function () {
 
   it('should convert user nickname mentions from discord', function () {
     const message = {
+      embeds: [],
       mentions: {
         users: [
           {
@@ -464,6 +479,7 @@ describe('Bot', function () {
 
   it('should convert twitch emotes from discord', function () {
     const message = {
+      embeds: [],
       mentions: { users: [] },
       content: '<:SCGWat:230473833046343680>',
     };
@@ -473,6 +489,7 @@ describe('Bot', function () {
 
   it('should convert animated emoji from discord', function () {
     const message = {
+      embeds: [],
       mentions: { users: [] },
       content: '<a:in_love:432887860270465028>',
     };
@@ -584,6 +601,7 @@ describe('Bot', function () {
 
   it('should convert newlines from discord', function () {
     const message = {
+      embeds: [],
       mentions: { users: [] },
       content: 'hi\nhi\r\nhi\r',
     };
@@ -594,6 +612,7 @@ describe('Bot', function () {
   it('should hide usernames for commands to IRC', function () {
     const text = '!test command';
     const message = {
+      embeds: [],
       content: text,
       mentions: { users: [] },
       channel: {
@@ -617,6 +636,7 @@ describe('Bot', function () {
     this.setCustomBot({ ...config, commandCharacters: ['@@'] });
     const text = '@@test command';
     const message = {
+      embeds: [],
       content: text,
       mentions: { users: [] },
       channel: {
@@ -655,6 +675,7 @@ describe('Bot', function () {
     const nickname = 'discord-nickname';
     this.guild.members.cache.set(id, { nickname });
     const message = {
+      embeds: [],
       content: text,
       mentions: { users: [] },
       channel: {
@@ -727,6 +748,7 @@ describe('Bot', function () {
     this.addRole({ name: 'example-role', id: '12345' });
     const text = '<@&12345>';
     const message = {
+      embeds: [],
       content: text,
       mentions: { users: [] },
       channel: {
@@ -747,6 +769,7 @@ describe('Bot', function () {
 
     const text = '<@&12346>';
     const message = {
+      embeds: [],
       content: text,
       mentions: { users: [] },
       channel: {
@@ -846,6 +869,7 @@ describe('Bot', function () {
     this.bot.sendToDiscord('testuser', '#irc', 'test message');
     this.sendStub.should.have.been.calledOnce;
     const message = {
+      embeds: [],
       content: 'test message',
       mentions: { users: [] },
       channel: {
@@ -894,6 +918,7 @@ describe('Bot', function () {
     this.bot.sendToDiscord('testuser', '#irc', 'test message');
     this.sendStub.should.have.been.calledOnce;
     const message = {
+      embeds: [],
       content: 'test message',
       mentions: { users: [] },
       channel: {
@@ -957,6 +982,7 @@ describe('Bot', function () {
     };
     this.setCustomBot({ ...configMsgFormatDefault, format });
     const message = {
+      embeds: [],
       content: 'test message',
       mentions: { users: [] },
       channel: {
@@ -983,6 +1009,7 @@ describe('Bot', function () {
 
     const text = '!testcmd';
     const message = {
+      embeds: [],
       content: text,
       mentions: { users: [] },
       channel: {
@@ -1012,6 +1039,7 @@ describe('Bot', function () {
 
     const attachmentUrl = 'https://image/url.jpg';
     const message = {
+      embeds: [],
       content: '',
       mentions: { users: [] },
       attachments: createAttachments(attachmentUrl),
@@ -1036,6 +1064,7 @@ describe('Bot', function () {
 
     const text = '!testcmd';
     const message = {
+      embeds: [],
       content: text,
       mentions: { users: [] },
       channel: {
@@ -1288,6 +1317,7 @@ describe('Bot', function () {
 
   it('should not send messages to IRC if Discord user is ignored', function () {
     const message = {
+      embeds: [],
       content: 'text',
       mentions: { users: [] },
       channel: {
@@ -1306,6 +1336,7 @@ describe('Bot', function () {
 
   it('should not send messages to IRC if Discord user is ignored by id', function () {
     const message = {
+      embeds: [],
       content: 'text',
       mentions: { users: [] },
       channel: {
