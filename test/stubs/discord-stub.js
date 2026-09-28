@@ -1,4 +1,3 @@
-/* eslint-disable class-methods-use-this */
 import events from 'events';
 import sinon from 'sinon';
 import discord, { Options } from 'discord.js';

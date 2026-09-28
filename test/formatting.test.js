@@ -1,5 +1,3 @@
-/* eslint-disable prefer-arrow-callback */
-
 import chai from 'chai';
 import {
   formatFromDiscordToIRC,

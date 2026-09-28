@@ -1,4 +1,3 @@
-/* eslint-disable class-methods-use-this */
 export default function createWebhookStub(sendWebhookMessage) {
   return class WebhookStub {
     constructor(id, token) {
