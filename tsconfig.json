@@ -1,0 +1,11 @@
+{
+  "extends": "@tsconfig/node24/tsconfig.json",
+  "compilerOptions": {
+    "allowJs": true,
+    "checkJs": true,
+    "erasableSyntaxOnly": true,
+    "noImplicitAny": false,
+    "noEmit": true
+  },
+  "include": ["lib/**/*.js"]
+}

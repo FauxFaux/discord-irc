@@ -28,6 +28,7 @@
     "format": "prettier --write '{lib,test}/**/*.?s'",
     "prepare": "npm run build",
     "lint": "eslint . --ignore-path .gitignore",
+    "typecheck": "tsc --project tsconfig.json",
     "save-coverage": "nyc report --reporter=lcov",
     "test": "mocha --require @babel/register -- 'test/*.test.js'"
   },
@@ -52,12 +53,16 @@
     "@babel/eslint-parser": "^7.13.14",
     "@babel/preset-env": "^7.13.15",
     "@babel/register": "^7.13.16",
+    "@tsconfig/node24": "^24",
+    "@types/lodash": "^4",
+    "@types/node": "^24",
     "chai": "^4.3.4",
     "eslint": "^8.19.0",
     "eslint-config-airbnb-base": "^15.0.0",
     "mocha": "^10.0.0",
     "prettier": "~3.9",
     "sinon": "^14.0.0",
-    "sinon-chai": "^3.6.0"
+    "sinon-chai": "^3.6.0",
+    "typescript": "~6.0"
   }
 }

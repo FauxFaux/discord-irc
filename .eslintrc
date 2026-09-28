@@ -14,6 +14,8 @@
     "import/prefer-default-export": 0,
     "import/no-dynamic-require": 0,
     "operator-linebreak": 0,
+    "no-bitwise": "off",
+    "function-paren-newline": "off",
     "implicit-arrow-linebreak": 0
   }
 }
