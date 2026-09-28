@@ -35,7 +35,7 @@
     "lodash": "^4.17.21",
     "simple-markdown": "^0.7.3",
     "strip-json-comments": "^5",
-    "winston": "^3.3.3"
+    "winston": "^3"
   },
   "devDependencies": {
     "@babel/cli": "^7",
@@ -48,13 +48,13 @@
     "@types/lodash": "^4",
     "@types/mocha": "^10",
     "@types/node": "^24",
-    "chai": "^6.2.2",
+    "chai": "^6",
     "eslint": "^10",
     "globals": "^17",
-    "mocha": "^12.0.2",
+    "mocha": "^12",
     "prettier": "~3.9",
-    "sinon": "^22.1.0",
-    "sinon-chai": "^4.0.1",
+    "sinon": "^22",
+    "sinon-chai": "^4",
     "typescript": "~6.0",
     "typescript-eslint": "^8"
   }
