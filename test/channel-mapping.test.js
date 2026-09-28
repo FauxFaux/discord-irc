@@ -1,4 +1,4 @@
-import chai from 'chai';
+import * as chai from 'chai';
 import irc from 'irc-upd';
 import discord from 'discord.js';
 import Bot from '../lib/bot';

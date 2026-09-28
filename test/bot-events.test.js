@@ -1,4 +1,4 @@
-import chai from 'chai';
+import * as chai from 'chai';
 import sinonChai from 'sinon-chai';
 import sinon from 'sinon';
 import irc from 'irc-upd';
